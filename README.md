@@ -1,5 +1,9 @@
 # Solr Similarity
-This project provides offers Spark based solution for computing similarity between documents in solr index.
+This project offers solution for computing similarity between solr results in n dimensional vector space.
+# Highlights :
++ It works on top of Apache Spark (a custom Spark RDD is implmeted to easily import Solr results to Spark) 
++ Configurable vectorizers. The default implementation emphasises more on field names rathen than field values. (Advanced one is in TODO: list ).
++ Configurable Similarity measures. The default one is based on cosine simularity.
 
 
 ## Requirements
@@ -13,7 +17,7 @@ This project provides offers Spark based solution for computing similarity betwe
 + to build : `mvn clean package`
 
 ## to run :
-+ Usage
++ __Usage__
 ```
 $ java -jar target/solr-similarity-1.0-SNAPSHOT.jar
      -master VAL          : spark master name or url (default: local)
@@ -24,7 +28,8 @@ $ java -jar target/solr-similarity-1.0-SNAPSHOT.jar
      -vectorizer [simple] : name of vectorizer to use (default: simple)
 ```
 
-+ Example to find similarity between documents matching to query "flash"
++ __Example__
+ to find similarity between documents matching to query "flash"
 
 ```
  java -jar target/solr-similarity-1.0-SNAPSHOT.jar \
@@ -32,4 +37,11 @@ $ java -jar target/solr-similarity-1.0-SNAPSHOT.jar
     -query "flash" \
     -out cos-similarity.out
 
+```
+this should produce a file `cos-similarity.out/part-00000` containing
+```
+docID1,docid2,score
+docID1,docid3,score
+..............
+...............
 ```
