@@ -12,6 +12,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.rdd.RDD;
+import org.apache.spark.util.SystemClock;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -36,6 +37,9 @@ public class SolrSimilarity {
 
     @Option(name = "-solr", required = true, usage = "Solr URL")
     private URL solrUrl;
+
+    @Option(name = "-query", usage = "Solr query for selecting the documents")
+    private String solrQuery = "*:*";
 
     @Option(name ="-master", usage="spark master name or url")
     private String masterUrl = "local";
@@ -141,7 +145,7 @@ public class SolrSimilarity {
     public void run(){
 
         //Step: get the documents from solr which match to query and construct RDD
-        JavaRDD<SolrDocument> solrRDD = getSolrRDD("*:*").toJavaRDD().cache();
+        JavaRDD<SolrDocument> solrRDD = getSolrRDD(solrQuery).toJavaRDD().cache();
 
         // Convert documents to vector form
         JavaRDD<Vector> vectorRDD = solrRDD.map(vectorizer.getVectorizer(this));
@@ -168,6 +172,7 @@ public class SolrSimilarity {
 
     public static void main(String[] args) throws IOException, SolrServerException {
 
+        long t1 = System.currentTimeMillis();
         SolrSimilarity solrSim = new SolrSimilarity();
         CmdLineParser parser = new CmdLineParser(solrSim);
         try {
@@ -180,6 +185,6 @@ public class SolrSimilarity {
         solrSim.init();
         solrSim.run();
 
-        System.out.println("Done..");
+        System.out.println("Done.., Time Taken :" + (System.currentTimeMillis() - t1) + "ms");
     }
 }

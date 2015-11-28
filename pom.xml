@@ -11,7 +11,7 @@
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <exec.mainClass></exec.mainClass>
+    <exec.mainClass>edu.usc.cs.ir.solr.similarity.SolrSimilarity</exec.mainClass>
     <args4j.version>2.32</args4j.version>
     <slf4j.version>1.7.12</slf4j.version>
     <scala.version>2.11</scala.version>

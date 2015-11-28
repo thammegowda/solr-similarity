@@ -1,6 +1,5 @@
 package edu.usc.cs.ir.solr.similarity;
 
-import edu.usc.cs.ir.SolrDocIterator;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.SolrDocument;
 import org.apache.spark.Partition;

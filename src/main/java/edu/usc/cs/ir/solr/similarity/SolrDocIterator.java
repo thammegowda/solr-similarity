@@ -1,4 +1,4 @@
-package edu.usc.cs.ir;
+package edu.usc.cs.ir.solr.similarity;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -15,7 +15,6 @@ import java.util.Iterator;
 
 /**
  * Iterates over solr result set.
- *
  *
  */
 public class SolrDocIterator extends AbstractIterator<SolrDocument> implements Iterator<SolrDocument> {
