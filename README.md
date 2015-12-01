@@ -39,12 +39,12 @@ $ java -jar target/solr-similarity-1.0-SNAPSHOT.jar
  java -jar target/solr-similarity-1.0-SNAPSHOT.jar \
     -solr http://localhost:8983/solr/collection1 \
     -query "flash" \
-    -out cos-similarity.out
+    -out cos-similarity.csv
     -format csv  #For CSV file
 
 java -jar target/solr-similarity-1.0-SNAPSHOT.jar \
     -solr http://localhost:8983/solr/collection1 \
     -query "flash" \
-    -out cos-similarity.json
+    -out clusters.json
     -format cluster #For Clusters JSON file
 ```
