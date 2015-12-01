@@ -190,13 +190,10 @@ public class SolrSimilarity {
         result = result.filter(triple -> !triple._3().isNaN()
                 && !triple._3().isInfinite()
                 && triple._3() >= threshold);
+        result = result.cache();
         switch (format) {
             case cluster:
-                JavaPairRDD<String, Iterable<Tuple2<String, Double>>> pairedRDD =
-                        result.mapToPair(triple ->
-                                new Tuple2<>(triple._1(), new Tuple2<>(triple._2(), triple._3()))
-                        ).groupByKey().cache();
-                writeClusterJson(pairedRDD, output.getPath());
+                writeClusterJson(result, output.getPath());
                 break;
             case csv:
                 writeCSV(result, output.getPath());
@@ -215,30 +212,42 @@ public class SolrSimilarity {
                 .saveAsTextFile(outputPath);
     }
 
+    public static String getFileName(String path){
+        String[] parts = path.split("/");
+        return parts[parts.length -1];
+    }
+
     /**
      * Writes Cluster output to JSON File
-     * @param pairedRDD
+     * @param result
      * @param outputPath
      * @throws IOException
      */
-    private void writeClusterJson(JavaPairRDD<String, Iterable<Tuple2<String, Double>>> pairedRDD,
+    private void writeClusterJson(JavaRDD<Tuple3<String, String, Double>> result,
                                   String outputPath) throws IOException {
+
+        JavaPairRDD<String, Iterable<Tuple2<String, Double>>> pairedRDD =
+                result.mapToPair(triple ->
+                        new Tuple2<>(triple._1(), new Tuple2<>(triple._2(), triple._3()))
+                ).groupByKey();
         Iterator<Tuple2<String, Iterable<Tuple2<String, Double>>>> iterator = pairedRDD.toLocalIterator();
         Map<String, Object> out = new HashMap<>();
         List l1Children = new ArrayList();
         out.put("name", "root");
         out.put("children", l1Children);
-        int maxL1Children = 300;
-        int maxL2Children = 100;
+        int maxL1Children = 50;
+        int maxL2Children = 50;
         while(iterator.hasNext()) {
             Tuple2<String, Iterable<Tuple2<String, Double>>> nextDoc = iterator.next();
             Map<String, Object> l1Child = new HashMap<>();
             List l2Children = new ArrayList();
-            l1Child.put("name", nextDoc._1());
+            l1Child.put("name", getFileName(nextDoc._1()));
+            l1Child.put("id", nextDoc._1());
             l1Child.put("children", l2Children);
             for (Tuple2<String, Double> doc : nextDoc._2()) {
                 Map<String, Object> l2Child = new HashMap<>();
-                l2Child.put("name", doc._1());
+                l2Child.put("name", getFileName(doc._1()));
+                l2Child.put("id", doc._1());
                 l2Child.put("score", doc._2());
                 l2Children.add(l2Child);
                 if (l2Children.size() > maxL2Children) {

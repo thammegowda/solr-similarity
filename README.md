@@ -48,3 +48,7 @@ java -jar target/solr-similarity-1.0-SNAPSHOT.jar \
     -out cos-similarity.json
     -format cluster #For Clusters JSON file
 ```
+
+## Screen Shots:
++ Clusters with 90% similarity threshold on a small test data :
+    ![Cluster1](./docs/imgs/clusters1.png)
